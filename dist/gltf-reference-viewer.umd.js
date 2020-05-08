@@ -1867,7 +1867,7 @@
           {
               for (const element of member)
               {
-                  if (element !== undefined && element.initGl !== undefined)
+                  if (element !== null && element !== undefined && element.initGl !== undefined)
                   {
                       element.initGl(gltf);
                   }
