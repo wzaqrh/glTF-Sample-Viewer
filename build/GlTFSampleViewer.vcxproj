@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -63,7 +63,7 @@
     <None Include="..\source\Renderer\shaders\cubemap.frag" />
     <None Include="..\source\Renderer\shaders\cubemap.vert" />
     <None Include="..\source\Renderer\shaders\functions.glsl" />
-    <None Include="..\source\Renderer\shaders\gltfSamplerViewerShaders.np_proj" />
+    <None Include="..\source\Renderer\shaders\gltf笔记.glsl" />
     <None Include="..\source\Renderer\shaders\ibl.glsl" />
     <None Include="..\source\Renderer\shaders\material_info.glsl" />
     <None Include="..\source\Renderer\shaders\pbr.frag" />
@@ -79,13 +79,17 @@
     <None Include="..\source\ResourceLoader\ktx.js" />
     <None Include="..\source\ResourceLoader\loader.js" />
     <None Include="..\source\ResourceLoader\resource_loader.js" />
+    <None Include="..\source\shaders\debug.frag" />
+    <None Include="..\source\shaders\fullscreen.vert" />
+    <None Include="..\source\shaders\ibl_filtering.frag" />
+    <None Include="..\source\shaders\panorama_to_cubemap.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{427BD1C5-F034-4822-AEF1-8997D4B67BBD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GlTFSampleViewer</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
