@@ -132,6 +132,21 @@ GltfState.DebugOutput = {
         OCCLUSION: "Occlusion",
         /** output the emissive value */
         EMISSIVE: "Emissive",
+        VEC_TO_LIGHT: "Vector L",
+        VEC_TO_VIEW: "Vector V",
+		INTENSITY_NdotL: "Intensity NdotL",
+		MIP_COUNT: "Mip Level",
+		VEC_REFLECTION: "Vector R",
+		BRDF_DIFFUSE: "Brdf Diffuse",
+		BRDF_SPECULAR: "Brdf Specular",
+		BRDF_SPECULAR_D: "Brdf Specular-D",
+		BRDF_SPECULAR_V: "Brdf Specular-V",
+		BRDF_SPECULAR_F: "Brdf Specular-F",
+		IBL_DIFFUSE: "Ibl Diffuse",
+		IBL_SPECULAR: "Ibl Specular",
+		IBL_DIFFUSE_PREFILTER_ENV: "Ibl Diffuse Prefilter-Env",
+		IBL_SPECULAR_PREFILTER_ENV: "Ibl Specular Prefilter-Env",
+		IBL_SPECULAR_LUT: "Ibl Specular LUT",
     },
 
     mr: {

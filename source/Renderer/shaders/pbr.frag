@@ -156,7 +156,7 @@ void main()
 #endif
 
 #ifdef USE_PUNCTUAL
-    for (int i = 0; i < LIGHT_COUNT; ++i)
+    for (int i = 0; i < min(LIGHT_COUNT, 1); ++i)
     {
         Light light = u_Lights[i];
 
@@ -302,11 +302,116 @@ void main()
 #if DEBUG == DEBUG_EMISSIVE
     g_finalColor.rgb = linearTosRGB(f_emissive);
 #endif
+#if DEBUG == DEBUG_VECTOR_V
+    g_finalColor.rgb = (v + 1.0) / 2.0;
+#endif
+#if DEBUG == DEBUG_VECTOR_L && defined(USE_PUNCTUAL)
+	if (LIGHT_COUNT > 0) {
+		Light lgt = u_Lights[0];
+		vec3 pointToLight;
+		if (lgt.type != LightType_Directional)
+		{
+		   pointToLight = lgt.position - v_Position;
+		}
+		else
+		{
+		   pointToLight = -lgt.direction;
+		}
+		vec3 l = normalize(pointToLight);
+		g_finalColor.rgb = (l + 1.0) / 2.0;
+	}
+#endif
+#if DEBUG == DEBUG_INTENSITY_NdotL && defined(USE_PUNCTUAL)
+	if (LIGHT_COUNT > 0) {
+		Light lgt = u_Lights[0];
+		vec3 pointToLight;
+		if (lgt.type != LightType_Directional)
+		{
+		   pointToLight = lgt.position - v_Position;
+		}
+		else
+		{
+		   pointToLight = -lgt.direction;
+		}
+		vec3 intensity = getLighIntensity(lgt, pointToLight);
+		vec3 l = normalize(pointToLight);
+		float NdotL = clampedDot(n, l);
+		intensity *= NdotL;
+	}
+#endif
+#if DEBUG == DEBUG_VECTOR_R
+	g_finalColor.rgb = normalize(reflect(-v, n));
+	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
+#endif
 
+#if DEBUG == DEBUG_BRDF_DIFFUSE || DEBUG == DEBUG_BRDF_SPECULAR || DEBUG == DEBUG_BRDF_SPECULAR_D || DEBUG == DEBUG_BRDF_SPECULAR_V || DEBUG == DEBUG_BRDF_SPECULAR_F
+#if defined(MATERIAL_METALLICROUGHNESS) && defined(USE_PUNCTUAL)
+	if (LIGHT_COUNT > 0) {
+		Light lgt = u_Lights[0];
+		vec3 pointToLight;
+		if (lgt.type != LightType_Directional)
+		{
+		   pointToLight = lgt.position - v_Position;
+		}
+		else
+		{
+		   pointToLight = -lgt.direction;
+		}
+        vec3 l = normalize(pointToLight);   // Direction from surface point to light
+        vec3 h = normalize(l + v);          // Direction of the vector between l and v, called halfway vector
+        float NdotL = clampedDot(n, l);
+        float NdotV = clampedDot(n, v);
+        float NdotH = clampedDot(n, h);
+        float LdotH = clampedDot(l, h);
+        float VdotH = clampedDot(v, h);
+	#if DEBUG == DEBUG_BRDF_DIFFUSE
+        g_finalColor.rgb = BRDF_lambertian(materialInfo.f0, materialInfo.f90, materialInfo.c_diff, materialInfo.specularWeight, VdotH);
+	#elif DEBUG == DEBUG_BRDF_SPECULAR
+		g_finalColor.rgb = BRDF_specularGGX(materialInfo.f0, materialInfo.f90, materialInfo.alphaRoughness, materialInfo.specularWeight, VdotH, NdotL, NdotV, NdotH);
+	#elif DEBUG == DEBUG_BRDF_SPECULAR_D
+		float dd = D_GGX(NdotH, materialInfo.alphaRoughness);
+		g_finalColor.rgb = vec3(dd);
+	#elif DEBUG == DEBUG_BRDF_SPECULAR_V
+		float vv = V_GGX(NdotL, NdotV, materialInfo.alphaRoughness);
+		g_finalColor.rgb = vec3(vv);
+	#elif DEBUG == DEBUG_BRDF_SPECULAR_F
+		g_finalColor.rgb = F_Schlick(materialInfo.f0, materialInfo.f90, VdotH);
+	#endif
+	}
+#endif
+#endif
+
+#if DEBUG == DEBUG_MIP_LEVEL
+	float mip = float(u_MipCount - 1);
+	g_finalColor.rgb = vec3(mip / 32.0);
+#endif
+
+#if DEBUG == DEBUG_IBL_DIFFUSE || DEBUG == DEBUG_IBL_SPECULAR || DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_LUT
+#if defined(USE_IBL)
+#if DEBUG == DEBUG_IBL_DIFFUSE
+    g_finalColor.rgb = getIBLRadianceLambertian(n, v, materialInfo.perceptualRoughness, materialInfo.c_diff, materialInfo.f0, materialInfo.specularWeight);	
+#elif DEBUG == DEBUG_IBL_SPECULAR
+	g_finalColor.rgb = getIBLRadianceGGX(n, v, materialInfo.perceptualRoughness, materialInfo.f0, materialInfo.specularWeight);
+#elif DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV
+	g_finalColor.rgb = getDiffuseLight(n);
+#elif DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV
+	float mip = float(u_MipCount - 1);
+	float lod = materialInfo.perceptualRoughness * mip;
+	vec3 reflW = normalize(reflect(-v, n));
+	g_finalColor.rgb = getSpecularSample(reflW, lod).rgb;
+#elif DEBUG == DEBUG_IBL_SPECULAR_LUT
+    float nv = clampedDot(n, v);
+    vec2 brdfsp = clamp(vec2(nv, materialInfo.perceptualRoughness), vec2(0.0, 0.0), vec2(1.0, 1.0));
+    vec2 fab = texture(u_GGXLUT, brdfsp).rg;
+	g_finalColor.rgb = vec3(fab.x, fab.y, 0.0);
+#endif
+#endif
+#endif
     // MR:
 #ifdef MATERIAL_METALLICROUGHNESS
 #if DEBUG == DEBUG_METALLIC_ROUGHNESS
     g_finalColor.rgb = linearTosRGB(f_diffuse + f_specular);
+	//g_finalColor.rgb = linearTosRGB(f_diffuse);
 #endif
 #if DEBUG == DEBUG_METALLIC
     g_finalColor.rgb = linearTosRGB(vec3(materialInfo.metallic));
@@ -322,7 +427,8 @@ void main()
     // Clearcoat:
 #ifdef MATERIAL_CLEARCOAT
 #if DEBUG == DEBUG_CLEARCOAT
-    g_finalColor.rgb = linearTosRGB(f_clearcoat);
+    //g_finalColor.rgb = linearTosRGB(f_clearcoat);
+	g_finalColor.rgb = linearTosRGB(f_specular);
 #endif
 #if DEBUG == DEBUG_CLEARCOAT_FACTOR
     g_finalColor.rgb = linearTosRGB(vec3(materialInfo.clearcoatFactor));

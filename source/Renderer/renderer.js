@@ -97,7 +97,7 @@ class gltfRenderer
     {
         const context = this.webGl.context;
         const maxSamples = context.getParameter(context.MAX_SAMPLES);
-        const samples = state.internalMSAA < maxSamples ? state.internalMSAA : maxSamples;
+        const samples = 1;//state.internalMSAA < maxSamples ? state.internalMSAA : maxSamples;
         if (!this.initialized){
 
             context.pixelStorei(GL.UNPACK_COLORSPACE_CONVERSION_WEBGL, GL.NONE);
@@ -684,7 +684,23 @@ class gltfRenderer
             {debugOutput: GltfState.DebugOutput.generic.UV_COORDS_1, shaderDefine: "DEBUG_UV_1"},
             {debugOutput: GltfState.DebugOutput.generic.OCCLUSION, shaderDefine: "DEBUG_OCCLUSION"},
             {debugOutput: GltfState.DebugOutput.generic.EMISSIVE, shaderDefine: "DEBUG_EMISSIVE"},
-
+			{debugOutput: GltfState.DebugOutput.generic.VEC_TO_LIGHT, shaderDefine: "DEBUG_VECTOR_L"},
+			{debugOutput: GltfState.DebugOutput.generic.VEC_TO_VIEW, shaderDefine: "DEBUG_VECTOR_V"},
+			{debugOutput: GltfState.DebugOutput.generic.INTENSITY_NdotL, shaderDefine: "DEBUG_INTENSITY_NdotL"},
+			{debugOutput: GltfState.DebugOutput.generic.MIP_COUNT, shaderDefine: "DEBUG_MIP_LEVEL"},
+			{debugOutput: GltfState.DebugOutput.generic.VEC_REFLECTION, shaderDefine: "DEBUG_VECTOR_R"},
+			
+			{debugOutput: GltfState.DebugOutput.generic.BRDF_DIFFUSE, shaderDefine: "DEBUG_BRDF_DIFFUSE"},
+			{debugOutput: GltfState.DebugOutput.generic.BRDF_SPECULAR, shaderDefine: "DEBUG_BRDF_SPECULAR"},
+			{debugOutput: GltfState.DebugOutput.generic.BRDF_SPECULAR_D, shaderDefine: "DEBUG_BRDF_SPECULAR_D"},
+			{debugOutput: GltfState.DebugOutput.generic.BRDF_SPECULAR_V, shaderDefine: "DEBUG_BRDF_SPECULAR_V"},
+			{debugOutput: GltfState.DebugOutput.generic.BRDF_SPECULAR_F, shaderDefine: "DEBUG_BRDF_SPECULAR_F"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_DIFFUSE, shaderDefine: "DEBUG_IBL_DIFFUSE"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR, shaderDefine: "DEBUG_IBL_SPECULAR"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_DIFFUSE_PREFILTER_ENV, shaderDefine: "DEBUG_IBL_DIFFUSE_PREFILTER_ENV"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR_PREFILTER_ENV, shaderDefine: "DEBUG_IBL_SPECULAR_PREFILTER_ENV"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR_LUT, shaderDefine: "DEBUG_IBL_SPECULAR_LUT"},
+			
             {debugOutput: GltfState.DebugOutput.mr.METALLIC_ROUGHNESS, shaderDefine: "DEBUG_METALLIC_ROUGHNESS"},
             {debugOutput: GltfState.DebugOutput.mr.BASECOLOR, shaderDefine: "DEBUG_BASE_COLOR"},
             {debugOutput: GltfState.DebugOutput.mr.ROUGHNESS, shaderDefine: "DEBUG_ROUGHNESS"},
