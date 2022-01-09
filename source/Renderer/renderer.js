@@ -29,7 +29,7 @@ class gltfRenderer
 
         this.webGl = new gltfWebGl(context);
         this.initialized = false;
-        this.samples = 4;
+        this.samples = 1;
 
         // create render target for non transmission materials
         this.opaqueRenderTexture = 0;
@@ -272,11 +272,24 @@ class gltfRenderer
         }
 
         currentCamera.aspectRatio = this.currentWidth / this.currentHeight;
-
+		console.info("camera: width, height", this.currentWidth, this.currentHeight);
+		
+		let camera_look_direction = currentCamera.getLookDirection(state.gltf);
+		console.info("camera: look_direction", camera_look_direction);
+		
+		let camera_rotation = currentCamera.getRotation(state.gltf);
+		console.info("camera: rotation", camera_look_direction);
+		
+		let camera_look_target = currentCamera.getTarget(state.gltf);
+		console.info("camera: look_target", camera_look_target);
+		
         this.projMatrix = currentCamera.getProjectionMatrix();
         this.viewMatrix = currentCamera.getViewMatrix(state.gltf);
         this.currentCameraPosition = currentCamera.getPosition(state.gltf);
-
+		console.info("camera: position", this.currentCameraPosition);
+		console.info("camera: viewMatrix", this.viewMatrix);
+		console.info("camera: projMatrix", this.projMatrix);
+		
         this.visibleLights = this.getVisibleLights(state.gltf, scene);
         if (this.visibleLights.length === 0 && !state.renderingParameters.useIBL &&
             state.renderingParameters.useDirectionalLightsWithDisabledIBL)
@@ -683,7 +696,9 @@ class gltfRenderer
             {debugOutput: GltfState.DebugOutput.generic.UV_COORDS_0, shaderDefine: "DEBUG_UV_0"},
             {debugOutput: GltfState.DebugOutput.generic.UV_COORDS_1, shaderDefine: "DEBUG_UV_1"},
             {debugOutput: GltfState.DebugOutput.generic.OCCLUSION, shaderDefine: "DEBUG_OCCLUSION"},
-            {debugOutput: GltfState.DebugOutput.generic.EMISSIVE, shaderDefine: "DEBUG_EMISSIVE"},
+            {debugOutput: GltfState.DebugOutput.generic.EMISSIVE, shaderDefine: "DEBUG_EMISSIVE"},			
+			{debugOutput: GltfState.DebugOutput.generic.CAMERA_POS, shaderDefine: "DEBUG_CAMERA_POS"},
+			{debugOutput: GltfState.DebugOutput.generic.SURFACE_POS, shaderDefine: "DEBUG_SURFACE_POS"},
 			{debugOutput: GltfState.DebugOutput.generic.VEC_TO_LIGHT, shaderDefine: "DEBUG_VECTOR_L"},
 			{debugOutput: GltfState.DebugOutput.generic.VEC_TO_VIEW, shaderDefine: "DEBUG_VECTOR_V"},
 			{debugOutput: GltfState.DebugOutput.generic.INTENSITY_NdotL, shaderDefine: "DEBUG_INTENSITY_NdotL"},

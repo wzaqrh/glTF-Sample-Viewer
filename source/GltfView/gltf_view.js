@@ -99,6 +99,8 @@ class GltfView
         if (scene === undefined)
         {
             return {
+				rendererWidth: 0,
+				rendererHeight: 0,
                 meshCount: 0,
                 faceCount: 0,
                 opaqueMaterialsCount: 0,
@@ -145,6 +147,8 @@ class GltfView
 
         // assemble statistics object
         return {
+			rendererWidth: this.renderer.currentWidth,
+			rendererHeight: this.renderer.currentHeight,			
             meshCount: activeMeshes.length,
             faceCount: faceCount,
             opaqueMaterialsCount: opaqueMaterials.length,

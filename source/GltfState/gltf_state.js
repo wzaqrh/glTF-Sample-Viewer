@@ -132,6 +132,8 @@ GltfState.DebugOutput = {
         OCCLUSION: "Occlusion",
         /** output the emissive value */
         EMISSIVE: "Emissive",
+		CAMERA_POS: "Camera Pos",
+		SURFACE_POS: "Surface Pos",
         VEC_TO_LIGHT: "Vector L",
         VEC_TO_VIEW: "Vector V",
 		INTENSITY_NdotL: "Intensity NdotL",

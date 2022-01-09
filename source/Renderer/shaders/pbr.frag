@@ -302,8 +302,17 @@ void main()
 #if DEBUG == DEBUG_EMISSIVE
     g_finalColor.rgb = linearTosRGB(f_emissive);
 #endif
+#if DEBUG == DEBUG_CAMERA_POS
+	g_finalColor.rgb = u_Camera;
+	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
+#endif
+#if DEBUG == DEBUG_SURFACE_POS
+	g_finalColor.rgb = v_Position;
+	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
+#endif
 #if DEBUG == DEBUG_VECTOR_V
-    g_finalColor.rgb = (v + 1.0) / 2.0;
+	g_finalColor.rgb = v;
+    g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
 #endif
 #if DEBUG == DEBUG_VECTOR_L && defined(USE_PUNCTUAL)
 	if (LIGHT_COUNT > 0) {
