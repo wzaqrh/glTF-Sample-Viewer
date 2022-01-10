@@ -282,6 +282,8 @@ class gltfRenderer
 		
 		let camera_look_target = currentCamera.getTarget(state.gltf);
 		console.info("camera: look_target", camera_look_target);
+				
+		console.info("camera: znear, zfar, yfov, aspectRatio tan(fov/2)", currentCamera.znear, currentCamera.zfar, currentCamera.yfov, currentCamera.aspectRatio, Math.tan(currentCamera.yfov / 2));
 		
         this.projMatrix = currentCamera.getProjectionMatrix();
         this.viewMatrix = currentCamera.getViewMatrix(state.gltf);
@@ -696,7 +698,8 @@ class gltfRenderer
             {debugOutput: GltfState.DebugOutput.generic.UV_COORDS_0, shaderDefine: "DEBUG_UV_0"},
             {debugOutput: GltfState.DebugOutput.generic.UV_COORDS_1, shaderDefine: "DEBUG_UV_1"},
             {debugOutput: GltfState.DebugOutput.generic.OCCLUSION, shaderDefine: "DEBUG_OCCLUSION"},
-            {debugOutput: GltfState.DebugOutput.generic.EMISSIVE, shaderDefine: "DEBUG_EMISSIVE"},			
+            {debugOutput: GltfState.DebugOutput.generic.EMISSIVE, shaderDefine: "DEBUG_EMISSIVE"},		
+			{debugOutput: GltfState.DebugOutput.generic.WINDOW_POS, shaderDefine: "DEBUG_WINDOW_POS"},
 			{debugOutput: GltfState.DebugOutput.generic.CAMERA_POS, shaderDefine: "DEBUG_CAMERA_POS"},
 			{debugOutput: GltfState.DebugOutput.generic.SURFACE_POS, shaderDefine: "DEBUG_SURFACE_POS"},
 			{debugOutput: GltfState.DebugOutput.generic.VEC_TO_LIGHT, shaderDefine: "DEBUG_VECTOR_L"},

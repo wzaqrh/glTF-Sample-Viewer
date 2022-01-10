@@ -302,12 +302,15 @@ void main()
 #if DEBUG == DEBUG_EMISSIVE
     g_finalColor.rgb = linearTosRGB(f_emissive);
 #endif
+#if DEBUG == DEBUG_WINDOW_POS
+	g_finalColor.rgb = vec3(gl_FragCoord.x / 1520.0, gl_FragCoord.y / 937.0, 0);
+#endif
 #if DEBUG == DEBUG_CAMERA_POS
 	g_finalColor.rgb = u_Camera;
 	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
 #endif
 #if DEBUG == DEBUG_SURFACE_POS
-	g_finalColor.rgb = v_Position;
+	g_finalColor.rgb = v_Position * 32.0;
 	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
 #endif
 #if DEBUG == DEBUG_VECTOR_V
