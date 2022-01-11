@@ -716,6 +716,7 @@ class gltfRenderer
 			{debugOutput: GltfState.DebugOutput.generic.IBL_DIFFUSE, shaderDefine: "DEBUG_IBL_DIFFUSE"},
 			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR, shaderDefine: "DEBUG_IBL_SPECULAR"},
 			{debugOutput: GltfState.DebugOutput.generic.IBL_DIFFUSE_PREFILTER_ENV, shaderDefine: "DEBUG_IBL_DIFFUSE_PREFILTER_ENV"},
+			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR_PREFILTER_ENV_UV, shaderDefine: "DEBUG_IBL_SPECULAR_PREFILTER_ENV_UV"},
 			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR_PREFILTER_ENV, shaderDefine: "DEBUG_IBL_SPECULAR_PREFILTER_ENV"},
 			{debugOutput: GltfState.DebugOutput.generic.IBL_SPECULAR_LUT, shaderDefine: "DEBUG_IBL_SPECULAR_LUT"},
 			

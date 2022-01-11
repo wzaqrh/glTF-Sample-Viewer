@@ -148,6 +148,7 @@ GltfState.DebugOutput = {
 		IBL_DIFFUSE: "Ibl Diffuse",
 		IBL_SPECULAR: "Ibl Specular",
 		IBL_DIFFUSE_PREFILTER_ENV: "Ibl Diffuse Prefilter-Env",
+		IBL_SPECULAR_PREFILTER_ENV_UV: "Ibl Specular Prefilter-Env uv",
 		IBL_SPECULAR_PREFILTER_ENV: "Ibl Specular Prefilter-Env",
 		IBL_SPECULAR_LUT: "Ibl Specular LUT",
     },

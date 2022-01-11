@@ -395,10 +395,10 @@ void main()
 
 #if DEBUG == DEBUG_MIP_LEVEL
 	float mip = float(u_MipCount - 1);
-	g_finalColor.rgb = vec3(mip / 32.0);
+	g_finalColor.rgb = vec3(mip / 32.0, materialInfo.perceptualRoughness, mip * materialInfo.perceptualRoughness);
 #endif
 
-#if DEBUG == DEBUG_IBL_DIFFUSE || DEBUG == DEBUG_IBL_SPECULAR || DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_LUT
+#if DEBUG == DEBUG_IBL_DIFFUSE || DEBUG == DEBUG_IBL_SPECULAR || DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV || DEBUG == DEBUG_IBL_SPECULAR_LUT || DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV_UV
 #if defined(USE_IBL)
 #if DEBUG == DEBUG_IBL_DIFFUSE
     g_finalColor.rgb = getIBLRadianceLambertian(n, v, materialInfo.perceptualRoughness, materialInfo.c_diff, materialInfo.f0, materialInfo.specularWeight);	
@@ -406,6 +406,11 @@ void main()
 	g_finalColor.rgb = getIBLRadianceGGX(n, v, materialInfo.perceptualRoughness, materialInfo.f0, materialInfo.specularWeight);
 #elif DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV
 	g_finalColor.rgb = getDiffuseLight(n);
+#elif DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV_UV
+	float mip = float(u_MipCount - 1);
+	float lod = materialInfo.perceptualRoughness * mip;
+	vec3 reflW = normalize(reflect(-v, n));
+	g_finalColor = vec4(reflW, lod);
 #elif DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV
 	float mip = float(u_MipCount - 1);
 	float lod = materialInfo.perceptualRoughness * mip;
