@@ -407,10 +407,9 @@ void main()
 #elif DEBUG == DEBUG_IBL_DIFFUSE_PREFILTER_ENV
 	g_finalColor.rgb = getDiffuseLight(n);
 #elif DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV_UV
-	float mip = float(u_MipCount - 1);
-	float lod = materialInfo.perceptualRoughness * mip;
 	vec3 reflW = normalize(reflect(-v, n));
-	g_finalColor = vec4(reflW, lod);
+	g_finalColor.rgb = reflW;
+	g_finalColor.rgb = (g_finalColor.rgb + 1.0) / 2.0;
 #elif DEBUG == DEBUG_IBL_SPECULAR_PREFILTER_ENV
 	float mip = float(u_MipCount - 1);
 	float lod = materialInfo.perceptualRoughness * mip;
