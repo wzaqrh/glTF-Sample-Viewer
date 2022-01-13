@@ -27,7 +27,7 @@ class gltfWebGl
 
         if (EXT_texture_filter_anisotropic)
         {
-            this.context.anisotropy = EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT;
+            this.context.anisotropy = 0;//EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT;
             this.context.maxAnisotropy = this.context.getParameter(EXT_texture_filter_anisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
             this.context.supports_EXT_texture_filter_anisotropic = true;
         }

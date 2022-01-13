@@ -55,7 +55,7 @@ class gltfRenderer
         this.shaderCache = new ShaderCache(shaderSources, this.webGl);
 
         let requiredWebglExtensions = [
-            "EXT_texture_filter_anisotropic",
+            //"EXT_texture_filter_anisotropic",
             "OES_texture_float_linear"
         ];
 
@@ -143,16 +143,16 @@ class gltfRenderer
 
             this.colorRenderBuffer = context.createRenderbuffer();
             context.bindRenderbuffer(context.RENDERBUFFER, this.colorRenderBuffer);
-            context.renderbufferStorageMultisample( context.RENDERBUFFER,
-                                                    samples,
+            context.renderbufferStorage/*Multisample*/( context.RENDERBUFFER,
+                                                    //samples,
                                                     context.RGBA8, 
                                                     this.opaqueFramebufferWidth,
                                                     this.opaqueFramebufferHeight);
 
             this.depthRenderBuffer = context.createRenderbuffer();
             context.bindRenderbuffer(context.RENDERBUFFER, this.depthRenderBuffer);
-            context.renderbufferStorageMultisample( context.RENDERBUFFER,
-                samples,
+            context.renderbufferStorage/*Multisample*/( context.RENDERBUFFER,
+                //samples,
                 context.DEPTH_COMPONENT16, 
                 this.opaqueFramebufferWidth,
                 this.opaqueFramebufferHeight);
@@ -181,15 +181,15 @@ class gltfRenderer
             {
                 this.samples = samples;
                 context.bindRenderbuffer(context.RENDERBUFFER, this.colorRenderBuffer);
-                context.renderbufferStorageMultisample( context.RENDERBUFFER,
-                    samples,
+                context.renderbufferStorage/*Multisample*/( context.RENDERBUFFER,
+                    //samples,
                     context.RGBA8, 
                     this.opaqueFramebufferWidth,
                     this.opaqueFramebufferHeight);
                 
                 context.bindRenderbuffer(context.RENDERBUFFER, this.depthRenderBuffer);
-                context.renderbufferStorageMultisample( context.RENDERBUFFER,
-                    samples,
+                context.renderbufferStorage/*Multisample*/( context.RENDERBUFFER,
+                    //samples,
                     context.DEPTH_COMPONENT16, 
                     this.opaqueFramebufferWidth,
                     this.opaqueFramebufferHeight);
@@ -475,6 +475,8 @@ class gltfRenderer
         {
             this.webGl.context.disable(GL.BLEND);
         }
+		
+		this.webGl.context.disable(GL.DITHER);
 
         const drawIndexed = primitive.indices !== undefined;
         if (drawIndexed)

@@ -82,7 +82,7 @@ class GltfState
             /** If this is set to true, directional lights will be generated if IBL is disabled */
             useDirectionalLightsWithDisabledIBL: false,
             /** MSAA used for cases which are not handled by the browser (e.g. Transmission)*/
-            internalMSAA: 4
+            internalMSAA: 1
         };
 
         // retain a reference to the view with which the state was created, so that it can be validated
