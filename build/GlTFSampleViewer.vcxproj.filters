@@ -30,6 +30,9 @@
     <Filter Include="SourceShader">
       <UniqueIdentifier>{2f32302e-a32c-4512-8b5e-f364af51dba3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader笔记">
+      <UniqueIdentifier>{4c7647da-d0b5-4ae9-b523-c4a80a104584}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\source\gltf\accessor.js">
@@ -221,8 +224,14 @@
     <None Include="..\source\shaders\panorama_to_cubemap.frag">
       <Filter>SourceShader</Filter>
     </None>
-    <None Include="..\source\Renderer\shaders\gltf笔记.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\source\Renderer\shaders\note\glsl2hlsl.glsl">
+      <Filter>Shader笔记</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\note\gltf笔记.glsl">
+      <Filter>Shader笔记</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\note\math.glsl">
+      <Filter>Shader笔记</Filter>
     </None>
   </ItemGroup>
 </Project>
