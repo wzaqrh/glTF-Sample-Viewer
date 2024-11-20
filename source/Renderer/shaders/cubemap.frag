@@ -22,4 +22,8 @@ void main()
 #else
     FragColor = vec4(toneMap(color.rgb), color.a);
 #endif
+
+//#if DEBUG == DEBUG_WINDOW_POS
+//	FragColor = vec4(gl_FragCoord.x / 1520.0, gl_FragCoord.y / 937.0, 0.0, 1.0);
+//#endif
 }

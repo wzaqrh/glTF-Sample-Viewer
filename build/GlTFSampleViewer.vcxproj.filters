@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="源文件\gltf">
+      <UniqueIdentifier>{f899c362-f331-4f76-9960-da5ef2afa10e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\GltfState">
+      <UniqueIdentifier>{55933f2e-9b4c-4213-8cb5-49af4fe0edbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\GltfView">
+      <UniqueIdentifier>{ac23ea41-1b58-48da-9c71-b7a5e8278166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Renderer">
+      <UniqueIdentifier>{36d7d3df-db6a-4715-bf5d-dcf8ba39a526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ResourceLoader">
+      <UniqueIdentifier>{c714da2e-1765-41be-978c-58b1d3f63522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\shaders">
+      <UniqueIdentifier>{db1caf78-2b4b-4d6d-846b-9012507bb0ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\source\gltf\accessor.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\animation.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\animation_sampler.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\asset.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\buffer.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\buffer_view.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\camera.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\channel.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\gltf.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\gltf_object.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\gltf_utils.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\image.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\image_based_light.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\image_mime_type.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\interpolator.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\light.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\material.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\math_utils.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\mesh.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\node.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\primitive.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\sampler.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\scene.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\skin.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\texture.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\user_camera.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\utils.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\gltf\variant.js">
+      <Filter>源文件\gltf</Filter>
+    </None>
+    <None Include="..\source\GltfState\gltf_state.js">
+      <Filter>源文件\GltfState</Filter>
+    </None>
+    <None Include="..\source\GltfView\gltf_view.js">
+      <Filter>源文件\GltfView</Filter>
+    </None>
+    <None Include="..\source\libs\hdrpng.js">
+      <Filter>源文件\shaders</Filter>
+    </None>
+    <None Include="..\source\libs\libktx.js">
+      <Filter>源文件\shaders</Filter>
+    </None>
+    <None Include="..\source\libs\libktx.wasm">
+      <Filter>源文件\shaders</Filter>
+    </None>
+    <None Include="..\source\Renderer\environment_renderer.js">
+      <Filter>源文件\Renderer</Filter>
+    </None>
+    <None Include="..\source\Renderer\renderer.js">
+      <Filter>源文件\Renderer</Filter>
+    </None>
+    <None Include="..\source\Renderer\shader.js">
+      <Filter>源文件\Renderer</Filter>
+    </None>
+    <None Include="..\source\Renderer\shader_cache.js">
+      <Filter>源文件\Renderer</Filter>
+    </None>
+    <None Include="..\source\Renderer\webgl.js">
+      <Filter>源文件\Renderer</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\async_file_reader.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\draco.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\glb_parser.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\ktx.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\loader.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\ResourceLoader\resource_loader.js">
+      <Filter>源文件\ResourceLoader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\animation.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\brdf.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\cubemap.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\cubemap.vert">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\functions.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\gltfSamplerViewerShaders.np_proj">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\ibl.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\material_info.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\pbr.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\primitive.vert">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\punctual.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\textures.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\Renderer\shaders\tonemapping.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\source\gltf-sample-viewer.js">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="..\source\ibl_sampler.js">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="..\source\package.json">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
+</Project>

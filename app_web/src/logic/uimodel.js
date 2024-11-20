@@ -413,6 +413,10 @@ class UIModel
         statisticsUpdateObservable.subscribe(
             data => {
                 let statistics = {};
+				statistics["Renderer Size"] = {
+                    width: data.rendererWidth,
+                    height: data.rendererHeight
+                };
                 statistics["Mesh Count"] = data.meshCount;
                 statistics["Triangle Count"] = data.faceCount;
                 statistics["Opaque Material Count"] = data.opaqueMaterialsCount;
