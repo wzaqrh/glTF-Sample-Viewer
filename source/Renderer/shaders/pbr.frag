@@ -37,6 +37,7 @@ void main()
     baseColor.a = 1.0;
 #endif
 
+    // ÎÞ¹â²ÄÖÊ
 #ifdef MATERIAL_UNLIT
 #if ALPHAMODE == ALPHAMODE_MASK
     if (baseColor.a < u_AlphaCutoff)
