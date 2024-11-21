@@ -1,5 +1,6 @@
-uniform float u_Exposure;
+#include "glsl2hlsl.glsl"
 
+uniform float u_Exposure;
 
 const float GAMMA = 2.2;
 const float INV_GAMMA = 1.0 / GAMMA;
