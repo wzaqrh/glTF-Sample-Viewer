@@ -3,17 +3,64 @@
 
 #define MATERIAL_UNLIT
 #define MATERIAL_IOR
-#define MATERIAL_SPECULARGLOSSINESS
+//#define MATERIAL_SPECULARGLOSSINESS
 #define MATERIAL_METALLICROUGHNESS
 #define MATERIAL_SHEEN
 #define MATERIAL_CLEARCOAT
 #define MATERIAL_SPECULAR
 #define MATERIAL_TRANSMISSION
 #define MATERIAL_VOLUME
+
+#define HAS_DIFFUSE_UV_TRANSFORM
+#define HAS_BASECOLOR_UV_TRANSFORM
+#define HAS_NORMAL_UV_TRANSFORM
+#define HAS_METALLICROUGHNESS_UV_TRANSFORM
+#define HAS_SHEENCOLOR_UV_TRANSFORM
+#define HAS_SHEENROUGHNESS_UV_TRANSFORM
+#define HAS_CLEARCOAT_UV_TRANSFORM
+#define HAS_CLEARCOATROUGHNESS_UV_TRANSFORM
+#define HAS_CLEARCOATNORMAL_UV_TRANSFORM
+#define HAS_SPECULAR_UV_TRANSFORM
+#define HAS_SPECULARCOLOR_UV_TRANSFORM
+#define HAS_TRANSMISSION_UV_TRANSFORM
+#define HAS_OCCLUSION_UV_TRANSFORM
+#define HAS_EMISSIVE_UV_TRANSFORM
+
+#define HAS_COLOR_0_VEC4
+//#define HAS_COLOR_0_VEC3
+#define HAS_NORMAL_VEC3
+#define HAS_TANGENT_VEC4
+
+#define HAS_DIFFUSE_MAP
+#define HAS_SPECULAR_MAP
+#define HAS_SPECULAR_COLOR_MAP
+#define HAS_BASE_COLOR_MAP
+#define HAS_NORMAL_MAP
 #define HAS_OCCLUSION_MAP
 #define HAS_EMISSIVE_MAP
+//#define HAS_SPECULAR_GLOSSINESS_MAP
+#define HAS_METALLIC_ROUGHNESS_MAP
+#define HAS_SHEEN_COLOR_MAP
+#define HAS_SHEEN_ROUGHNESS_MAP
+#define HAS_CLEARCOAT_MAP
+#define HAS_CLEARCOAT_ROUGHNESS_MAP
+#define HAS_CLEARCOAT_NORMAL_MAP
+#define HAS_TRANSMISSION_MAP
+#define HAS_THICKNESS_MAP
+
 #define USE_IBL
 #define USE_PUNCTUAL
+#define LINEAR_OUTPUT
+
+const float M_PI = 3.141592653589793;
+float clampedDot(vec3 x, vec3 y)
+{
+	return clamp(dot(x, y), 0.0, 1.0);
+}
+float max3(vec3 v)
+{
+	return max(max(v.x, v.y), v.z);
+}
 
 /* getBaseColor */
 in_ vec2 v_texcoord_0;
@@ -41,10 +88,10 @@ vec2 getBaseColorUV()
 }
 
 #ifdef HAS_COLOR_0_VEC3
-in vec3 v_Color;
+in_ vec3 v_Color;
 #endif
 #ifdef HAS_COLOR_0_VEC4
-in vec4 v_Color;
+in_ vec4 v_Color;
 #endif
 vec4 getVertexColor()
 {
@@ -58,10 +105,14 @@ vec4 getVertexColor()
 	return color;
 }
 
+#if defined(MATERIAL_SPECULARGLOSSINESS)
 uniform vec4 u_DiffuseFactor;
-uniform vec4 u_BaseColorFactor;
 uniform sampler2D u_DiffuseSampler;
+#endif
+#if defined(MATERIAL_METALLICROUGHNESS)
+uniform vec4 u_BaseColorFactor;
 uniform sampler2D u_BaseColorSampler;
+#endif
 vec4 getBaseColor()
 {
     vec4 baseColor = vec4(1);
@@ -80,11 +131,24 @@ vec4 getBaseColor()
 }
 
 /* getNormalInfo */
+in_ vec3 v_Position;
+#ifdef HAS_NORMAL_VEC3
+    #ifdef HAS_TANGENT_VEC4
+    in_ mat3 v_TBN;
+    #else
+    in_ vec3 v_Normal;
+    #endif
+#endif
+uniform int u_NormalUVSet;
+uniform mat3 u_NormalUVTransform;
+uniform float u_NormalScale;
+uniform sampler2D u_NormalSampler;
+
 vec2 getNormalUV()
 {
     vec3 uv = vec3(u_NormalUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
 #ifdef HAS_NORMAL_UV_TRANSFORM
-    uv = u_NormalUVTransform * uv;
+	uv = u_NormalUVTransform * uv;
 #endif
 	return uv.xy;
 }
@@ -205,6 +269,7 @@ struct MaterialInfo
 	float attenuationDistance;
 };
 #ifdef MATERIAL_IOR
+uniform float u_Ior;
 MaterialInfo getIorInfo(MaterialInfo info)
 {
 	info.f0 = vec3(pow((u_Ior - 1.0) / (u_Ior + 1.0), 2.0));
@@ -228,6 +293,20 @@ MaterialInfo getSpecularGlossinessInfo(MaterialInfo info)
 }
 #endif
 #ifdef MATERIAL_METALLICROUGHNESS
+uniform int u_MetallicRoughnessUVSet;
+uniform mat3 u_MetallicRoughnessUVTransform;
+vec2 getMetallicRoughnessUV()
+{
+    vec3 uv = vec3(u_MetallicRoughnessUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_METALLICROUGHNESS_UV_TRANSFORM
+	uv = u_MetallicRoughnessUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform float u_MetallicFactor;
+uniform float u_RoughnessFactor;
+uniform sampler2D u_MetallicRoughnessSampler;
 MaterialInfo getMetallicRoughnessInfo(MaterialInfo info)
 {
     info.metallic = u_MetallicFactor;
@@ -246,6 +325,32 @@ MaterialInfo getMetallicRoughnessInfo(MaterialInfo info)
 }
 #endif
 #ifdef MATERIAL_SHEEN
+uniform int u_SheenColorUVSet;
+uniform mat3 u_SheenColorUVTransform;
+vec2 getSheenColorUV()
+{
+    vec3 uv = vec3(u_SheenColorUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_SHEENCOLOR_UV_TRANSFORM
+	uv = u_SheenColorUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform int u_SheenRoughnessUVSet;
+uniform mat3 u_SheenRoughnessUVTransform;
+vec2 getSheenRoughnessUV()
+{
+    vec3 uv = vec3(u_SheenRoughnessUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_SHEENROUGHNESS_UV_TRANSFORM
+	uv = u_SheenRoughnessUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform vec3 u_SheenColorFactor;
+uniform float u_SheenRoughnessFactor;
+uniform sampler2D u_SheenColorSampler;
+uniform sampler2D u_SheenRoughnessSampler;
 MaterialInfo getSheenInfo(MaterialInfo info)
 {
     info.sheenColorFactor = u_SheenColorFactor;
@@ -262,6 +367,53 @@ MaterialInfo getSheenInfo(MaterialInfo info)
 }
 #endif
 #ifdef MATERIAL_CLEARCOAT
+uniform int u_ClearcoatUVSet;
+uniform mat3 u_ClearcoatUVTransform;
+vec2 getClearcoatUV()
+{
+    vec3 uv = vec3(u_ClearcoatUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_CLEARCOAT_UV_TRANSFORM
+    uv = u_ClearcoatUVTransform * uv;
+#endif
+	return uv.xy;
+}
+uniform int u_ClearcoatRoughnessUVSet;
+uniform mat3 u_ClearcoatRoughnessUVTransform;
+vec2 getClearcoatRoughnessUV()
+{
+    vec3 uv = vec3(u_ClearcoatRoughnessUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_CLEARCOATROUGHNESS_UV_TRANSFORM
+    uv = u_ClearcoatRoughnessUVTransform * uv;
+#endif
+	return uv.xy;
+}
+uniform int u_ClearcoatNormalUVSet;
+uniform mat3 u_ClearcoatNormalUVTransform;
+vec2 getClearcoatNormalUV()
+{
+    vec3 uv = vec3(u_ClearcoatNormalUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_CLEARCOATNORMAL_UV_TRANSFORM
+    uv = u_ClearcoatNormalUVTransform * uv;
+#endif
+	return uv.xy;
+}
+uniform float u_ClearcoatNormalScale;
+uniform sampler2D u_ClearcoatNormalSampler;
+vec3 getClearcoatNormal(NormalInfo normalInfo)
+{
+#ifdef HAS_CLEARCOAT_NORMAL_MAP
+    vec3 n = texture(u_ClearcoatNormalSampler, getClearcoatNormalUV()).rgb * 2.0 - vec3(1.0);
+    n *= vec3(u_ClearcoatNormalScale, u_ClearcoatNormalScale, 1.0);
+    n = mat3(normalInfo.t, normalInfo.b, normalInfo.ng) * normalize(n);
+    return n;
+#else
+	return normalInfo.ng;
+#endif
+}
+uniform float u_ClearcoatFactor;
+uniform float u_ClearcoatRoughnessFactor;
+uniform sampler2D u_ClearcoatSampler;
+uniform sampler2D u_ClearcoatRoughnessSampler;
 MaterialInfo getClearCoatInfo(MaterialInfo info, NormalInfo normalInfo)
 {
 	info.clearcoatFactor = u_ClearcoatFactor;
@@ -282,6 +434,32 @@ MaterialInfo getClearCoatInfo(MaterialInfo info, NormalInfo normalInfo)
 }
 #endif
 #ifdef MATERIAL_SPECULAR
+uniform int u_SpecularUVSet;
+uniform mat3 u_SpecularUVTransform;
+vec2 getSpecularUV()
+{
+    vec3 uv = vec3(u_SpecularUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_SPECULAR_UV_TRANSFORM
+    uv = u_SpecularUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform int u_SpecularColorUVSet;
+uniform mat3 u_SpecularColorUVTransform;
+vec2 getSpecularColorUV()
+{
+    vec3 uv = vec3(u_SpecularColorUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_SPECULARCOLOR_UV_TRANSFORM
+    uv = u_SpecularColorUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform vec3 u_KHR_materials_specular_specularColorFactor;
+uniform float u_KHR_materials_specular_specularFactor;
+uniform sampler2D u_SpecularSampler;
+uniform sampler2D u_SpecularColorSampler;
 MaterialInfo getSpecularInfo(MaterialInfo info)
 {
     vec4 specularTexture = vec4(1.0);
@@ -299,6 +477,19 @@ MaterialInfo getSpecularInfo(MaterialInfo info)
 }
 #endif
 #ifdef MATERIAL_TRANSMISSION
+uniform int u_TransmissionUVSet;
+uniform mat3 u_TransmissionUVTransform;
+vec2 getTransmissionUV()
+{
+    vec3 uv = vec3(u_TransmissionUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_TRANSMISSION_UV_TRANSFORM
+    uv = u_TransmissionUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform float u_TransmissionFactor;
+uniform sampler2D u_TransmissionSampler;
 MaterialInfo getTransmissionInfo(MaterialInfo info)
 {
 	info.transmissionFactor = u_TransmissionFactor;
@@ -310,6 +501,21 @@ MaterialInfo getTransmissionInfo(MaterialInfo info)
 }
 #endif
 #ifdef MATERIAL_VOLUME
+uniform int u_ThicknessUVSet;
+uniform mat3 u_ThicknessUVTransform;
+vec2 getThicknessUV()
+{
+    vec3 uv = vec3(u_ThicknessUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_THICKNESS_UV_TRANSFORM
+    uv = u_ThicknessUVTransform * uv;
+#endif
+	return uv.xy;
+}
+
+uniform float u_ThicknessFactor;
+uniform vec3 u_AttenuationColor;
+uniform float u_AttenuationDistance;
+uniform sampler2D u_ThicknessSampler;
 MaterialInfo getVolumeInfo(MaterialInfo info)
 {
 	info.thickness = u_ThicknessFactor;
@@ -324,10 +530,14 @@ MaterialInfo getVolumeInfo(MaterialInfo info)
 #endif
 
 /* IBL */
+uniform mat3 u_EnvRotation;
+uniform samplerCube u_GGXEnvSampler;
 vec4 getSpecularSample(vec3 reflection, float lod)
 {
 	return textureLod(u_GGXEnvSampler, u_EnvRotation * reflection, lod);
 }
+uniform int u_MipCount;
+uniform sampler2D u_GGXLUT;
 vec3 getIBLRadianceGGX(vec3 n, vec3 v, float roughness, vec3 F0, float specularWeight)
 {
 	float NdotV = clampedDot(n, v);
@@ -347,7 +557,9 @@ vec3 getIBLRadianceGGX(vec3 n, vec3 v, float roughness, vec3 F0, float specularW
     vec3 FssEss = k_S * f_ab.x + f_ab.y;
 	return specularWeight * specularLight * FssEss;
 }
+
 // specularWeight is introduced with KHR_materials_specular
+uniform samplerCube u_LambertianEnvSampler;
 vec3 getDiffuseLight(vec3 n)
 {
 	return texture(u_LambertianEnvSampler, u_EnvRotation * n).rgb;
@@ -373,10 +585,13 @@ vec3 getIBLRadianceLambertian(vec3 n, vec3 v, float roughness, vec3 diffuseColor
     vec3 k_D = diffuseColor * (1.0 - FssEss + FmsEms); // we use +FmsEms as indicated by the formula in the blog post (might be a typo in the implementation)
 	return (FmsEms + k_D) * irradiance;
 }
+
+uniform samplerCube u_CharlieEnvSampler;
 vec4 getSheenSample(vec3 reflection, float lod)
 {
 	return textureLod(u_CharlieEnvSampler, u_EnvRotation * reflection, lod);
 }
+uniform sampler2D u_CharlieLUT;
 vec3 getIBLRadianceCharlie(vec3 n, vec3 v, float sheenRoughness, vec3 sheenColor)
 {
 	float NdotV = clampedDot(n, v);
@@ -393,6 +608,20 @@ vec3 getIBLRadianceCharlie(vec3 n, vec3 v, float sheenRoughness, vec3 sheenColor
 
 /* Volume Refraction */
 #ifdef MATERIAL_TRANSMISSION
+uniform ivec2 u_TransmissionFramebufferSize;
+uniform sampler2D u_TransmissionFramebufferSampler;
+float applyIorToRoughness(float roughness, float ior)
+{
+    // Scale roughness with IOR so that an IOR of 1.0 results in no microfacet refraction and
+    // an IOR of 1.5 results in the default amount of microfacet refraction.
+	return roughness * clamp(ior * 2.0 - 2.0, 0.0, 1.0);
+}
+vec3 getTransmissionSample(vec2 fragCoord, float roughness, float ior)
+{
+	float framebufferLod = log2(float(u_TransmissionFramebufferSize.x)) * applyIorToRoughness(roughness, ior);
+    vec3 transmittedLight = textureLod(u_TransmissionFramebufferSampler, fragCoord.xy, framebufferLod).rgb;
+	return transmittedLight;
+}
 vec3 getVolumeTransmissionRay(vec3 n, vec3 v, float thickness, float ior, mat4 modelMatrix)
 {
     // Direction of refracted light.
@@ -407,12 +636,7 @@ vec3 getVolumeTransmissionRay(vec3 n, vec3 v, float thickness, float ior, mat4 m
     // The thickness is specified in local space.
 	return normalize(refractionVector) * thickness * modelScale;
 }
-vec3 getTransmissionSample(vec2 fragCoord, float roughness, float ior)
-{
-	float framebufferLod = log2(float(u_TransmissionFramebufferSize.x)) * applyIorToRoughness(roughness, ior);
-    vec3 transmittedLight = textureLod(u_TransmissionFramebufferSampler, fragCoord.xy, framebufferLod).rgb;
-	return transmittedLight;
-}
+
 // Compute attenuated light as it travels through a volume.
 vec3 applyVolumeAttenuation(vec3 radiance, float transmissionDistance, vec3 attenuationColor, float attenuationDistance)
 {
@@ -455,6 +679,10 @@ vec3 getIBLVolumeRefraction(vec3 n, vec3 v, float perceptualRoughness, vec3 base
 #endif
 
 /* PUNCTUAL */
+const int LightType_Directional = 0;
+const int LightType_Point = 1;
+const int LightType_Spot = 2;
+
 struct Light
 {
     vec3 direction;
@@ -469,6 +697,14 @@ struct Light
 	float outerConeCos;
 	int type;
 };
+#ifdef USE_PUNCTUAL
+#if !defined LIGHT_COUNT
+#define LIGHT_COUNT 4
+#endif
+uniform Light u_Lights[LIGHT_COUNT + 1]; //Array [0] is not allowed
+#endif
+
+#ifdef USE_PUNCTUAL
 // https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_lights_punctual/README.md#range-property
 float getRangeAttenuation(float range, float distance)
 {
@@ -507,6 +743,7 @@ vec3 getLighIntensity(Light light, vec3 pointToLight)
 	}
 	return rangeAttenuation * spotAttenuation * light.intensity * light.color;
 }
+
 // The following equation models the Fresnel reflectance term of the spec equation (aka F())
 // Implementation of fresnel from [4], Equation 15
 vec3 F_Schlick(vec3 f0, vec3 f90, float VdotH)
@@ -519,6 +756,7 @@ vec3 BRDF_lambertian(vec3 f0, vec3 f90, vec3 diffuseColor, float specularWeight,
     // see https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
 	return (1.0 - specularWeight * F_Schlick(f0, f90, VdotH)) * (diffuseColor / M_PI);
 }
+
 // Smith Joint GGX
 // Note: Vis = G / (4 * NdotL * NdotV)
 // see Eric Heitz. 2014. Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs. Journal of Computer Graphics Techniques, 3
@@ -555,6 +793,9 @@ vec3 BRDF_specularGGX(vec3 f0, vec3 f90, float alphaRoughness, float specularWei
 	float D = D_GGX(NdotH, alphaRoughness);
 	return specularWeight * F * Vis * D;
 }
+#endif
+
+#ifdef MATERIAL_SHEEN
 // Estevez and Kulla http://www.aconty.com/pdf/s2017_pbs_imageworks_sheen.pdf
 float D_Charlie(float sheenRoughness, float NdotH)
 {
@@ -603,10 +844,15 @@ vec3 getPunctualRadianceSheen(vec3 sheenColor, float sheenRoughness, float NdotL
 {
 	return NdotL * BRDF_specularSheen(sheenColor, sheenRoughness, NdotL, NdotV, NdotH);
 }
+
+uniform sampler2D u_SheenELUT;
 float albedoSheenScalingLUT(float NdotV, float sheenRoughnessFactor)
 {
 	return texture(u_SheenELUT, vec2(NdotV, sheenRoughnessFactor)).r;
 }
+#endif
+
+#ifdef MATERIAL_CLEARCOAT
 vec3 getPunctualRadianceClearCoat(vec3 clearcoatNormal, vec3 v, vec3 l, vec3 h, float VdotH, vec3 f0, vec3 f90, float clearcoatRoughness)
 {
 	float NdotL = clampedDot(clearcoatNormal, l);
@@ -614,12 +860,9 @@ vec3 getPunctualRadianceClearCoat(vec3 clearcoatNormal, vec3 v, vec3 l, vec3 h, 
 	float NdotH = clampedDot(clearcoatNormal, h);
 	return NdotL * BRDF_specularGGX(f0, f90, clearcoatRoughness * clearcoatRoughness, 1.0, VdotH, NdotL, NdotV, NdotH);
 }
-float applyIorToRoughness(float roughness, float ior)
-{
-    // Scale roughness with IOR so that an IOR of 1.0 results in no microfacet refraction and
-    // an IOR of 1.5 results in the default amount of microfacet refraction.
-	return roughness * clamp(ior * 2.0 - 2.0, 0.0, 1.0);
-}
+#endif
+
+#ifdef MATERIAL_TRANSMISSION
 vec3 getPunctualRadianceTransmission(vec3 normal, vec3 view, vec3 pointToLight, float alphaRoughness, vec3 f0, vec3 f90, vec3 baseColor, float ior)
 {
 	float transmissionRougness = applyIorToRoughness(alphaRoughness, ior);
@@ -636,8 +879,42 @@ vec3 getPunctualRadianceTransmission(vec3 normal, vec3 view, vec3 pointToLight, 
     // Transmission BTDF
 	return (1.0 - F) * baseColor * D * Vis;
 }
+#endif
+
+#ifdef HAS_OCCLUSION_MAP
+uniform int u_OcclusionUVSet;
+uniform mat3 u_OcclusionUVTransform;
+
+uniform float u_OcclusionStrength;
+uniform sampler2D u_OcclusionSampler;
+vec2 getOcclusionUV()
+{
+    vec3 uv = vec3(u_OcclusionUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_OCCLUSION_UV_TRANSFORM
+    uv = u_OcclusionUVTransform * uv;
+#endif
+	return uv.xy;
+}
+#endif
+
+uniform int u_EmissiveUVSet;
+uniform mat3 u_EmissiveUVTransform;
+uniform vec3 u_EmissiveFactor;
+uniform sampler2D u_EmissiveSampler;
+vec2 getEmissiveUV()
+{
+    vec3 uv = vec3(u_EmissiveUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
+#ifdef HAS_EMISSIVE_UV_TRANSFORM
+    uv = u_EmissiveUVTransform * uv;
+#endif
+	return uv.xy;
+}
 
 uniform float u_AlphaCutoff;
+uniform vec3 u_Camera;
+uniform mat4 u_ModelMatrix;
+uniform mat4 u_ViewMatrix;
+uniform mat4 u_ProjectionMatrix;
 out_ vec4 g_finalColor;
 void main()
 {
