@@ -239,15 +239,14 @@ NormalInfo getNormalInfo(vec3 v)
 struct MaterialInfo
 {
 	float ior;
-	float perceptualRoughness; // roughness value, as authored by the model creator (input to shader)
     vec3 f0; // full reflectance color (n incidence angle)
-
+	vec3 f90; // reflectance color at grazing angle
+    
+    float perceptualRoughness; // roughness value, as authored by the model creator (input to shader)
 	float alphaRoughness; // roughness mapped to a more linear change in the roughness (proposed by [2])
     vec3 c_diff;
 
-    vec3 f90; // reflectance color at grazing angle
 	float metallic;
-
     vec3 baseColor;
 
 	float sheenRoughnessFactor;
