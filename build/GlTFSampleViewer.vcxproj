@@ -68,6 +68,7 @@
     <None Include="..\source\Renderer\shaders\note\glsl2hlsl.glsl" />
     <None Include="..\source\Renderer\shaders\note\gltf笔记.glsl" />
     <None Include="..\source\Renderer\shaders\note\math.glsl" />
+    <None Include="..\source\Renderer\shaders\note\PBRVrayMtl.glsl" />
     <None Include="..\source\Renderer\shaders\pbr.frag" />
     <None Include="..\source\Renderer\shaders\primitive.vert" />
     <None Include="..\source\Renderer\shaders\punctual.glsl" />

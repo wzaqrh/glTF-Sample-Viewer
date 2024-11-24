@@ -233,5 +233,8 @@
     <None Include="..\source\Renderer\shaders\note\math.glsl">
       <Filter>Shader笔记</Filter>
     </None>
+    <None Include="..\source\Renderer\shaders\note\PBRVrayMtl.glsl">
+      <Filter>Shader笔记</Filter>
+    </None>
   </ItemGroup>
 </Project>
