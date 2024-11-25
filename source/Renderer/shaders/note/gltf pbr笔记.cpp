@@ -1,6 +1,7 @@
 迪士尼PBR白皮书 https://media.disneyanimation.com/uploads/production/publication_asset/48/asset/s2012_pbs_disney_brdf_notes_v3.pdf
 The PBR Guide https://www.adobe.com/learn/substance-3d-designer/web/the-pbr-guide-part-1
 The PBR Guide https://www.adobe.com/learn/substance-3d-designer/web/the-pbr-guide-part-2
+https://gist.github.com/Ginurx/941e2b684c71d001b2f6f16fc55a33ac
 
 #折射率IOR（Index of Refraction）
 {
