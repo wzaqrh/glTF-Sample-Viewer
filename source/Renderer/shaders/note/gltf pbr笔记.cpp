@@ -140,6 +140,17 @@ https://gist.github.com/Ginurx/941e2b684c71d001b2f6f16fc55a33ac
 		}
 }
 
+#次表面散射（SSS）与折射（Refraction）差异
+{
+	| **特性**         | **次表面散射（SSS）**                       | **折射（Refraction）**                  |
+	|-----------------|-------------------------------------------|---------------------------------------|
+	| **本质**        | 光在材质内部多次散射和吸收后散出            	  | 光穿过介质边界时发生方向偏折             |
+	| **光线传播**     | 随机方向多次散射                             | 单一方向偏折                           |
+	| **适用材质**     | 半透明材质：皮肤、蜡、大理石、牛奶等        	  | 透明材质：玻璃、水、钻石等              |
+	| **视觉效果**     | 柔和、散射光泽，颜色随厚度变化               	  | 锐利、方向性强，可能出现焦散和色散       |
+	| **数学模型**     | BSSRDF，扩散近似，双极子模型                  | 斯涅尔定律，Fresnel 方程，焦散渲染       |	
+}
+
 #Base Color
 {
 	#金属材质
@@ -198,8 +209,9 @@ https://gist.github.com/Ginurx/941e2b684c71d001b2f6f16fc55a33ac
 	#Burley Diffuse（迪士尼漫反射）
 	{
 	公式:
-		L_d = Albedo * (1 / pi) * (FD90 + (1 - FD90) * (1 - L . N)^5)
-
+		L_d = Albedo * (1 / pi) * (FD90 + (FD90 - 1) * (1 - L . N)^5) * (FD90 + (FD90 - 1) * (1 - V . N)^5)
+			= Albedo * (1 / pi) * Lerp(1, FD90, (1 - L . N)^5) * Lerp(1, FD90, (1 - V . N)^5)
+			
 		FD90 = 0.5 + 2 * (L . N)^2 * Roughness
 	特点:
 		- 由迪士尼提出，用于其 PBR 材质模型
@@ -271,6 +283,9 @@ https://gist.github.com/Ginurx/941e2b684c71d001b2f6f16fc55a33ac
 	次表面散射（SSS）  	| 模拟'半透明材质'的散射               	| 皮肤、蜡、大理石
 	能量守恒模型       	| 加入 'Fresnel效应'以符合物理规律     	| 高质量渲染，PBR 实践
 }
+
+#DFG公式列表
+http://graphicrants.blogspot.com/2013/08/specular-brdf-reference.html
 
 #Cook-Torrance Specular D模型
 {
@@ -441,6 +456,7 @@ https://gist.github.com/Ginurx/941e2b684c71d001b2f6f16fc55a33ac
 	{
 		公式:
 			F(v, h) = F_0 + (1 - F_0) * (1 - cos(θ_h))^5
+					= Lerp(F_0, 1, (1 - cos(θ_h))^5)
 		参数说明:
 			- F_0: 法线方向的反射率，取决于材质的折射率 (IOR)。
 			- cos(θ_h): 观察方向 v 与半程向量 h 的夹角余弦值。
