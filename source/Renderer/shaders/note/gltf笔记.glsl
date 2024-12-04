@@ -7,7 +7,7 @@
 #define MATERIAL_METALLICROUGHNESS
 #define MATERIAL_SHEEN
 #define MATERIAL_CLEARCOAT
-#define MATERIAL_SPECULAR
+//#define MATERIAL_SPECULAR
 #define MATERIAL_TRANSMISSION
 #define MATERIAL_VOLUME
 
@@ -238,26 +238,28 @@ NormalInfo getNormalInfo(vec3 v)
 /* MaterialInfo */
 struct MaterialInfo
 {
-	float ior;
-    vec3 f0; // full reflectance color (n incidence angle)
-	vec3 f90; // reflectance color at grazing angle
+	float ior;  // ’€…‰¬ 
+    vec3 f0;    // full reflectance color (n incidence angle)
+	vec3 f90;   // reflectance color at grazing angle
     
-    float perceptualRoughness; // roughness value, as authored by the model creator (input to shader)
-	float alphaRoughness; // roughness mapped to a more linear change in the roughness (proposed by [2])
+    float perceptualRoughness;  // roughness value, as authored by the model creator (input to shader)
+	float alphaRoughness;       // roughness mapped to a more linear change in the roughness (proposed by [2])
     vec3 c_diff;
 
-	float metallic;
-    vec3 baseColor;
+    /****** disney pbr_param begin ******/
+	float metallic;             
+    vec3 baseColor;             
 
-	float sheenRoughnessFactor;
-    vec3 sheenColorFactor;
+	float sheenRoughnessFactor; 
+    vec3 sheenColorFactor;      
 
-    vec3 clearcoatF0;
-    vec3 clearcoatF90;
-	float clearcoatFactor;
+    vec3 clearcoatF0;                 
+    vec3 clearcoatF90;          
+	float clearcoatFactor;      
     vec3 clearcoatNormal;
 	float clearcoatRoughness;
-
+    /****** disney pbr_param end ******/
+    
     // KHR_materials_specular 
 	float specularWeight; // product of specularFactor and specularTexture.a
 
@@ -319,7 +321,7 @@ MaterialInfo getMetallicRoughnessInfo(MaterialInfo info)
 #endif
     // Achromatic f0 based on IOR.
 	info.c_diff = mix(info.baseColor.rgb, vec3(0), info.metallic);
-	info.f0 = mix(info.f0, info.baseColor.rgb, info.metallic);
+	info.f0     = mix(info.f0, info.baseColor.rgb, info.metallic);
     return info;
 }
 #endif
@@ -972,7 +974,7 @@ void main()
     materialInfo = getVolumeInfo(materialInfo);
 #endif
 	materialInfo.perceptualRoughness = clamp(materialInfo.perceptualRoughness, 0.0, 1.0);
-	materialInfo.metallic = clamp(materialInfo.metallic, 0.0, 1.0);
+	materialInfo.metallic            = clamp(materialInfo.metallic, 0.0, 1.0);
     // Roughness is authored as perceptual roughness; as is convention,
     // convert to material roughness by squaring the perceptual roughness.
 	materialInfo.alphaRoughness = materialInfo.perceptualRoughness * materialInfo.perceptualRoughness;
@@ -980,13 +982,13 @@ void main()
     // Compute reflectance.
 	float reflectance = max(max(materialInfo.f0.r, materialInfo.f0.g), materialInfo.f0.b);
     // Anything less than 2% is physically impossible and is instead considered to be shadowing. Compare to "Real-Time-Rendering" 4th editon on page 325.
-	materialInfo.f90 = vec3(1.0);
+	materialInfo.f90  = vec3(1.0);
     
     // LIGHTING
-    vec3 f_specular = vec3(0.0);
-    vec3 f_diffuse = vec3(0.0);
+    vec3 f_specular  = vec3(0.0);
+    vec3 f_diffuse   = vec3(0.0);
     vec3 f_clearcoat = vec3(0.0);
-    vec3 f_sheen = vec3(0.0);
+    vec3 f_sheen     = vec3(0.0);
 #ifdef USE_IBL
     f_specular += getIBLRadianceGGX(n, v, materialInfo.perceptualRoughness, materialInfo.f0, materialInfo.specularWeight);
     f_diffuse += getIBLRadianceLambertian(n, v, materialInfo.perceptualRoughness, materialInfo.c_diff, materialInfo.f0, materialInfo.specularWeight);
@@ -1014,9 +1016,9 @@ void main()
     ao = texture(u_OcclusionSampler,  getOcclusionUV()).r;
     f_diffuse = mix(f_diffuse, f_diffuse * ao, u_OcclusionStrength);
     // apply ambient occlusion to all lighting that is not punctual
-    f_specular = mix(f_specular, f_specular * ao, u_OcclusionStrength);
-    f_sheen = mix(f_sheen, f_sheen * ao, u_OcclusionStrength);
-    f_clearcoat = mix(f_clearcoat, f_clearcoat * ao, u_OcclusionStrength);
+    f_specular  = mix(f_specular,   f_specular * ao,    u_OcclusionStrength);
+    f_sheen     = mix(f_sheen,      f_sheen * ao,       u_OcclusionStrength);
+    f_clearcoat = mix(f_clearcoat,  f_clearcoat * ao,   u_OcclusionStrength);
 #endif
 
 	float albedoSheenScaling = 1.0;
@@ -1048,7 +1050,7 @@ void main()
             // Calculation of analytical light
             // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#acknowledgments AppendixB
             vec3 intensity = getLighIntensity(light, pointToLight);
-            f_diffuse += intensity * NdotL *  BRDF_lambertian(materialInfo.f0, materialInfo.f90, materialInfo.c_diff, materialInfo.specularWeight, VdotH);
+            f_diffuse  += intensity * NdotL * BRDF_lambertian(materialInfo.f0,  materialInfo.f90, materialInfo.c_diff, materialInfo.specularWeight, VdotH);
             f_specular += intensity * NdotL * BRDF_specularGGX(materialInfo.f0, materialInfo.f90, materialInfo.alphaRoughness, materialInfo.specularWeight, VdotH, NdotL, NdotV, NdotH);
         #ifdef MATERIAL_SHEEN
             f_sheen += intensity * getPunctualRadianceSheen(materialInfo.sheenColorFactor, materialInfo.sheenRoughnessFactor, NdotL, NdotV, NdotH);
