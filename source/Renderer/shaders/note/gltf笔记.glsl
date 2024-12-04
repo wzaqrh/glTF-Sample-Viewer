@@ -541,21 +541,23 @@ uniform int u_MipCount;
 uniform sampler2D u_GGXLUT;
 vec3 getIBLRadianceGGX(vec3 n, vec3 v, float roughness, vec3 F0, float specularWeight)
 {
-	float NdotV = clampedDot(n, v);
+    // Pre-filtered Enviroment Map
 	float lod = roughness * float(u_MipCount - 1);
     vec3 reflection = normalize(reflect(-v, n));
-
+    vec4 specularSample = getSpecularSample(reflection, lod);
+    vec3 specularLight = specularSample.rgb;
+    
+    // Environment BRDF£¨LUT£©
+    float NdotV = clampedDot(n, v);
     vec2 brdfSamplePoint = clamp(vec2(NdotV, roughness), vec2(0.0, 0.0), vec2(1.0, 1.0));
     vec2 f_ab = texture(u_GGXLUT, brdfSamplePoint).rg;
-    vec4 specularSample = getSpecularSample(reflection, lod);
-
-    vec3 specularLight = specularSample.rgb;
-
+    
     // see https://bruop.github.io/ibl/#single_scattering_results at Single Scattering Results
     // Roughness dependent fresnel, from Fdez-Aguera
     vec3 Fr = max(vec3(1.0 - roughness), F0) - F0;
     vec3 k_S = F0 + Fr * pow(1.0 - NdotV, 5.0);
     vec3 FssEss = k_S * f_ab.x + f_ab.y;
+    
 	return specularWeight * specularLight * FssEss;
 }
 
@@ -686,16 +688,16 @@ const int LightType_Spot = 2;
 
 struct Light
 {
-    vec3 direction;
+    vec3 direction; // light to surface
 	float range;
 
     vec3 color;
 	float intensity;
 
     vec3 position;
-	float innerConeCos;
+	float innerConeCos; // cos(this.innerConeAngle);
 
-	float outerConeCos;
+	float outerConeCos; // cos(this.outerConeAngle);
 	int type;
 };
 #ifdef USE_PUNCTUAL
@@ -985,13 +987,13 @@ void main()
 	materialInfo.f90  = vec3(1.0);
     
     // LIGHTING
-    vec3 f_specular  = vec3(0.0);
     vec3 f_diffuse   = vec3(0.0);
+    vec3 f_specular  = vec3(0.0);
     vec3 f_clearcoat = vec3(0.0);
     vec3 f_sheen     = vec3(0.0);
 #ifdef USE_IBL
+	f_diffuse  += getIBLRadianceLambertian(n, v, materialInfo.perceptualRoughness, materialInfo.c_diff, materialInfo.f0, materialInfo.specularWeight);
     f_specular += getIBLRadianceGGX(n, v, materialInfo.perceptualRoughness, materialInfo.f0, materialInfo.specularWeight);
-    f_diffuse += getIBLRadianceLambertian(n, v, materialInfo.perceptualRoughness, materialInfo.c_diff, materialInfo.f0, materialInfo.specularWeight);
     #ifdef MATERIAL_CLEARCOAT
         f_clearcoat += getIBLRadianceGGX(materialInfo.clearcoatNormal, v, materialInfo.clearcoatRoughness, materialInfo.clearcoatF0, 1.0);
     #endif
@@ -1013,8 +1015,8 @@ void main()
     // Apply optional PBR terms for additional (optional) shading
 	float ao = 1.0;
 #ifdef HAS_OCCLUSION_MAP
-    ao = texture(u_OcclusionSampler,  getOcclusionUV()).r;
-    f_diffuse = mix(f_diffuse, f_diffuse * ao, u_OcclusionStrength);
+    ao = texture(u_OcclusionSampler, getOcclusionUV()).r;
+    f_diffuse   = mix(f_diffuse,    f_diffuse * ao,     u_OcclusionStrength);
     // apply ambient occlusion to all lighting that is not punctual
     f_specular  = mix(f_specular,   f_specular * ao,    u_OcclusionStrength);
     f_sheen     = mix(f_sheen,      f_sheen * ao,       u_OcclusionStrength);
@@ -1095,12 +1097,13 @@ void main()
 #endif
     
 #ifdef MATERIAL_TRANSMISSION
-    vec3 diffuse = mix(f_diffuse, f_transmission, materialInfo.transmissionFactor);
+	f_diffuse = mix(f_diffuse, f_transmission, materialInfo.transmissionFactor);
 #else
-    vec3 diffuse = f_diffuse;
+    //vec3 diffuse = f_diffuse;
 #endif
     
-	vec3 color = f_emissive + diffuse + f_specular;
+	vec3 color = f_emissive;
+	color += f_diffuse + f_specular;
 	color = f_sheen + color * albedoSheenScaling;
 	color = color * (1.0 - clearcoatFactor * clearcoatFresnel) + f_clearcoat;
     
